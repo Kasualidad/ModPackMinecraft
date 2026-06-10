@@ -34,11 +34,6 @@ $createdOrLoose = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.pw.toml" -Fil
     -not $before.ContainsKey($_.FullName)
 })
 
-$allLoose = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.pw.toml" -File)
-if ($allLoose.Count -gt $createdOrLoose.Count) {
-    $createdOrLoose = @($createdOrLoose + ($allLoose | Where-Object { $createdOrLoose.FullName -notcontains $_.FullName }) | Sort-Object FullName -Unique)
-}
-
 if ($createdOrLoose.Count -eq 0) {
     Write-Warning "No loose .pw.toml file was found in mods/. The mod may already exist or packwiz may have changed its output."
 } else {
@@ -47,16 +42,24 @@ if ($createdOrLoose.Count -eq 0) {
         if (Test-Path -LiteralPath $target) {
             $sourceHash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash
             $targetHash = (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
-            if ($sourceHash -ne $targetHash) {
-                throw "Target already exists with different content: $target"
+            if ($sourceHash -eq $targetHash) {
+                Remove-Item -LiteralPath $file.FullName -Force
+                Write-Host "Removed duplicate loose metafile: mods/$($file.Name)"
+            } else {
+                Move-Item -LiteralPath $file.FullName -Destination $target -Force
+                Write-Host "Updated indexed metafile: mods/.index/$($file.Name)"
             }
-            Remove-Item -LiteralPath $file.FullName -Force
-            Write-Host "Removed duplicate loose metafile: mods/$($file.Name)"
         } else {
             Move-Item -LiteralPath $file.FullName -Destination $target
             Write-Host "Moved metafile to: mods/.index/$($file.Name)"
         }
     }
+}
+
+$staleLoose = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.pw.toml" -File -ErrorAction SilentlyContinue)
+if ($staleLoose.Count -gt 0) {
+    Write-Warning "There are pre-existing loose .pw.toml files in mods/. This script left them alone:"
+    $staleLoose | ForEach-Object { Write-Warning "  mods/$($_.Name)" }
 }
 
 $jarMatches = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.jar" -File -ErrorAction SilentlyContinue | Where-Object {
