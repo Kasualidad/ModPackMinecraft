@@ -1,0 +1,18 @@
+filename = '../collective-1.20.1-8.25.jar'
+name = 'Collective'
+side = 'both'
+x-prismlauncher-dependencies = []
+x-prismlauncher-loaders = [ 'neoforge', 'forge', 'quilt', 'fabric' ]
+x-prismlauncher-mc-versions = [ '1.20.1' ]
+x-prismlauncher-release-type = 'release'
+x-prismlauncher-version-number = '1.20.1-8.25-fabric+forge+neo'
+
+[download]
+hash = 'cab283b987932be0f87afed3921b6f02b224a1c66d88cb9383420448245cdfa9fa08dbe107fbf4be3a9d2e10d949e96a42bb3a23f690d987860de70bd5535a82'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/e0M1UDsY/versions/lH1VBD4w/collective-1.20.1-8.25.jar'
+
+[update.modrinth]
+mod-id = 'e0M1UDsY'
+version = 'lH1VBD4w'

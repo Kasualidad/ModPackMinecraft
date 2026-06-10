@@ -50,7 +50,7 @@ function Get-TomlValue {
 function Read-PackMetafiles {
     param([Parameter(Mandatory = $true)][string]$Root)
 
-    $indexDir = Join-Path $Root "mods"
+    $indexDir = Join-Path $Root "mods/.index"
     $items = @()
     if (-not (Test-Path -LiteralPath $indexDir)) {
         return $items
@@ -81,7 +81,7 @@ function New-Maps {
 
     foreach ($meta in $Metafiles) {
         if ($meta.Filename) {
-            $byFilename[$meta.Filename.ToLowerInvariant()] = $meta
+            $byFilename[[System.IO.Path]::GetFileName($meta.Filename).ToLowerInvariant()] = $meta
         }
         if ($meta.ModId -and $meta.VersionId) {
             $byModVersion["$($meta.ModId)|$($meta.VersionId)"] = $meta
@@ -149,7 +149,7 @@ function New-ModrinthMetafile {
     $releaseType = Escape-Toml $Version.version_type
 
     $content = @"
-filename = "$filename"
+filename = "../$filename"
 name = "$name"
 side = "both"
 x-prismlauncher-loaders = [ "forge" ]
@@ -233,21 +233,21 @@ function Set-RowFromVersion {
         $Row.Status = "tracked"
         $Row.Source = "Modrinth id"
         $Row.Action = "already indexed"
-        $Row.Metafile = "mods/$([System.IO.Path]::GetFileName($meta.Path))"
+        $Row.Metafile = "mods/.index/$([System.IO.Path]::GetFileName($meta.Path))"
         $Row.Checked = $false
     } elseif ($Maps.ByMod.ContainsKey($Project.id)) {
         $meta = $Maps.ByMod[$Project.id]
         $Row.Status = "different version"
         $Row.Source = "Modrinth id"
         $Row.Action = "will update existing metafile"
-        $Row.Metafile = "mods/$([System.IO.Path]::GetFileName($meta.Path))"
+        $Row.Metafile = "mods/.index/$([System.IO.Path]::GetFileName($meta.Path))"
         $Row.TargetPath = $meta.Path
         $Row.Checked = $true
     } else {
         $Row.Status = "new"
         $Row.Source = "Modrinth hash"
         $Row.Action = "will create metafile"
-        $Row.Metafile = "mods/$($Project.slug).pw.toml"
+        $Row.Metafile = "mods/.index/$($Project.slug).pw.toml"
         $Row.TargetPath = ""
         $Row.Checked = $true
     }
@@ -388,7 +388,7 @@ function Build-Rows {
             $row.Project = $meta.Name
             $row.Version = $meta.VersionNumber
             $row.Action = "already indexed"
-            $row.Metafile = "mods/$([System.IO.Path]::GetFileName($meta.Path))"
+            $row.Metafile = "mods/.index/$([System.IO.Path]::GetFileName($meta.Path))"
         }
 
         [void]$script:Rows.Add($row)
@@ -626,7 +626,7 @@ $recognizeButton.Add_Click({
 $addButton.Add_Click({
     try {
         $root = $rootBox.Text.Trim()
-        $indexDir = Join-Path $root "mods"
+        $indexDir = Join-Path $root "mods/.index"
         New-Item -ItemType Directory -Force -Path $indexDir | Out-Null
 
         $maps = New-Maps -Metafiles @(Read-PackMetafiles -Root $root)
@@ -655,7 +655,7 @@ $addButton.Add_Click({
             $row.Status = "tracked"
             $row.Source = "written"
             $row.Action = "metafile written"
-            $row.Metafile = "mods/$([System.IO.Path]::GetFileName($target))"
+            $row.Metafile = "mods/.index/$([System.IO.Path]::GetFileName($target))"
             $row.Checked = $false
             $log.AppendText("Preparado: $($row.Metafile)" + [Environment]::NewLine)
         }

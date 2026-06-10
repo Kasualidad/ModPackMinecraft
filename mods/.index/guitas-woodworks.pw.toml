@@ -1,0 +1,25 @@
+filename = '../gwoodworks-1.1.1a-1.20.1-forge.jar'
+name = "guita's Woodworks"
+side = 'both'
+x-prismlauncher-loaders = [ 'forge' ]
+x-prismlauncher-mc-versions = [ '1.20.1' ]
+x-prismlauncher-release-type = 'release'
+x-prismlauncher-version-number = '1.1.1a-1.20.1-forge'
+
+[download]
+hash = 'bb6f1cbd135df1b3d012d785ea6002c93580c9664f96db5e38f90de00dd33c3659b331e54eb9a4e6416fef564955ff67cdd01866e21be85dcdb746686872f483'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/NTFyR6MX/versions/Bf2s0uI3/gwoodworks-1.1.1a-1.20.1-forge.jar'
+
+[update.modrinth]
+mod-id = 'NTFyR6MX'
+version = 'Bf2s0uI3'
+
+[[x-prismlauncher-dependencies]]
+addonId = 'eiktJyw1'
+type = 'OPTIONAL'
+
+[[x-prismlauncher-dependencies]]
+addonId = 'XnLNz8og'
+type = 'REQUIRED'

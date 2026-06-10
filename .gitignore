@@ -36,4 +36,4 @@ TrashSlotSaveState.json
 patchouli_data.json
 icon.png
 
-mods/.index/
+mods/*.pw.toml

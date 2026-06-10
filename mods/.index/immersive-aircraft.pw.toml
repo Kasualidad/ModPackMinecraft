@@ -1,0 +1,21 @@
+filename = '../immersive_aircraft-1.4.1+1.20.1-forge.jar'
+name = 'Immersive Aircraft'
+side = 'both'
+x-prismlauncher-loaders = [ 'forge' ]
+x-prismlauncher-mc-versions = [ '1.20.1' ]
+x-prismlauncher-release-type = 'release'
+x-prismlauncher-version-number = '1.4.1+1.20.1'
+
+[download]
+hash = '561feeababe1a75984eed66c5b62ac4bc5d1eaf6db35b8dda7295eb5d88b452b0c0170b35d7c3da4409c8253f4794ee8ffbda0b0ec59432b3d0b1736832a7867'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/x3HZvrj6/versions/QQI7iHKf/immersive_aircraft-1.4.1%2B1.20.1-forge.jar'
+
+[update.modrinth]
+mod-id = 'x3HZvrj6'
+version = 'QQI7iHKf'
+
+[[x-prismlauncher-dependencies]]
+addonId = 'Duramjh8'
+type = 'OPTIONAL'
