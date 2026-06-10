@@ -35,15 +35,19 @@ foreach ($match in [regex]::Matches($content, $blockPattern)) {
     }
 
     $filePath = $fileMatch.Groups[1].Value
-    if ($filePath -match '^mods/\.index/[^/\\]+\.pw\.toml$') {
+    if ($filePath -match '^mods/\.index/([^/\\]+\.pw\.toml)$') {
+        $filePath = "mods/$($Matches[1])"
+    }
+
+    if ($filePath -match '^mods/[^/\\]+\.pw\.toml$') {
         $entries[$filePath] = $hashMatch.Groups[1].Value.ToLowerInvariant()
     }
 }
 
-$indexDir = Join-Path $PWD "mods/.index"
-if (Test-Path -LiteralPath $indexDir) {
-    foreach ($file in (Get-ChildItem -LiteralPath $indexDir -Filter "*.pw.toml" -File)) {
-        $relativePath = "mods/.index/$($file.Name)"
+$metafileDir = Join-Path $PWD "mods"
+if (Test-Path -LiteralPath $metafileDir) {
+    foreach ($file in (Get-ChildItem -LiteralPath $metafileDir -Filter "*.pw.toml" -File)) {
+        $relativePath = "mods/$($file.Name)"
         $entries[$relativePath] = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
     }
 }
@@ -62,4 +66,4 @@ if ($blocks.Count -gt 0) {
 }
 
 Write-Utf8NoBomLf -Path "index.toml" -Content $output
-Write-Host "Cleaned index.toml safely. Kept or updated $($blocks.Count) mods/.index/*.pw.toml entries."
+Write-Host "Cleaned index.toml safely. Kept or updated $($blocks.Count) mods/*.pw.toml entries."

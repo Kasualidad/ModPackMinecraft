@@ -14,8 +14,7 @@ function Assert-RepoRoot {
 Assert-RepoRoot
 
 $modsDir = Join-Path $PWD "mods"
-$indexDir = Join-Path $modsDir ".index"
-New-Item -ItemType Directory -Force -Path $indexDir | Out-Null
+New-Item -ItemType Directory -Force -Path $modsDir | Out-Null
 
 $before = @{}
 if (Test-Path -LiteralPath $modsDir) {
@@ -38,28 +37,13 @@ if ($createdOrLoose.Count -eq 0) {
     Write-Warning "No loose .pw.toml file was found in mods/. The mod may already exist or packwiz may have changed its output."
 } else {
     foreach ($file in $createdOrLoose) {
-        $target = Join-Path $indexDir $file.Name
-        if (Test-Path -LiteralPath $target) {
-            $sourceHash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash
-            $targetHash = (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash
-            if ($sourceHash -eq $targetHash) {
-                Remove-Item -LiteralPath $file.FullName -Force
-                Write-Host "Removed duplicate loose metafile: mods/$($file.Name)"
-            } else {
-                Move-Item -LiteralPath $file.FullName -Destination $target -Force
-                Write-Host "Updated indexed metafile: mods/.index/$($file.Name)"
-            }
-        } else {
-            Move-Item -LiteralPath $file.FullName -Destination $target
-            Write-Host "Moved metafile to: mods/.index/$($file.Name)"
-        }
+        Write-Host "Created metafile: mods/$($file.Name)"
     }
 }
 
 $staleLoose = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.pw.toml" -File -ErrorAction SilentlyContinue)
 if ($staleLoose.Count -gt 0) {
-    Write-Warning "There are pre-existing loose .pw.toml files in mods/. This script left them alone:"
-    $staleLoose | ForEach-Object { Write-Warning "  mods/$($_.Name)" }
+    Write-Host "Packwiz metafiles in mods/: $($staleLoose.Count)"
 }
 
 $jarMatches = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.jar" -File -ErrorAction SilentlyContinue | Where-Object {
