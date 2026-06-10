@@ -19,18 +19,39 @@ if (-not (Test-Path -LiteralPath "index.toml")) {
     throw "index.toml not found. Run this script from the pack repository root."
 }
 
-$indexDir = Join-Path $PWD "mods/.index"
-if (-not (Test-Path -LiteralPath $indexDir)) {
-    throw "mods/.index not found. This pack expects Packwiz metafiles there."
+$entries = @{}
+$content = [System.IO.File]::ReadAllText((Resolve-Path -LiteralPath "index.toml"))
+$content = ($content -replace "`r`n", "`n") -replace "`r", "`n"
+$blockPattern = "(?ms)^\s*\[\[files\]\]\s*.*?(?=^\s*\[\[files\]\]|\z)"
+$filePattern = '(?m)^\s*file\s*=\s*"([^"]+)"\s*$'
+$hashPattern = '(?m)^\s*hash\s*=\s*"([a-fA-F0-9]{64})"\s*$'
+
+foreach ($match in [regex]::Matches($content, $blockPattern)) {
+    $block = $match.Value.Trim()
+    $fileMatch = [regex]::Match($block, $filePattern)
+    $hashMatch = [regex]::Match($block, $hashPattern)
+    if (-not $fileMatch.Success -or -not $hashMatch.Success) {
+        continue
+    }
+
+    $filePath = $fileMatch.Groups[1].Value
+    if ($filePath -match '^mods/\.index/[^/\\]+\.pw\.toml$') {
+        $entries[$filePath] = $hashMatch.Groups[1].Value.ToLowerInvariant()
+    }
 }
 
-$metafiles = @(Get-ChildItem -LiteralPath $indexDir -Filter "*.pw.toml" -File | Sort-Object Name)
+$indexDir = Join-Path $PWD "mods/.index"
+if (Test-Path -LiteralPath $indexDir) {
+    foreach ($file in (Get-ChildItem -LiteralPath $indexDir -Filter "*.pw.toml" -File)) {
+        $relativePath = "mods/.index/$($file.Name)"
+        $entries[$relativePath] = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+}
 
 $blocks = New-Object System.Collections.Generic.List[string]
-foreach ($file in $metafiles) {
-    $relativePath = "mods/.index/$($file.Name)"
-    $hash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-    $blocks.Add("[[files]]`nfile = `"$relativePath`"`nhash = `"$hash`"`nmetafile = true")
+foreach ($filePath in ($entries.Keys | Sort-Object)) {
+    $hash = $entries[$filePath]
+    $blocks.Add("[[files]]`nfile = `"$filePath`"`nhash = `"$hash`"`nmetafile = true")
 }
 
 $output = "hash-format = `"sha256`"`n"
@@ -41,4 +62,4 @@ if ($blocks.Count -gt 0) {
 }
 
 Write-Utf8NoBomLf -Path "index.toml" -Content $output
-Write-Host "Rebuilt index.toml from $($blocks.Count) mods/.index/*.pw.toml entries."
+Write-Host "Cleaned index.toml safely. Kept or updated $($blocks.Count) mods/.index/*.pw.toml entries."

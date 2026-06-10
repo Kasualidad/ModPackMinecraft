@@ -301,11 +301,19 @@ function Apply-Filter {
             $haystack = "$($row.Jar) $($row.Status) $($row.Project) $($row.Version) $($row.Action)".ToLowerInvariant()
             $visible = $haystack.Contains($query)
         }
-        if ($visible -and $filter -and $filter -ne "All") {
-            if ($filter -eq "Needs action") {
+        if ($visible -and $filter -and $filter -ne "Todos") {
+            if ($filter -eq "Necesitan accion") {
                 $visible = @("new", "different version", "unknown") -contains $row.Status
             } else {
-                $visible = $row.Status -eq $filter.ToLowerInvariant()
+                $wanted = switch ($filter) {
+                    "Ya incluidos" { "tracked" }
+                    "Nuevos" { "new" }
+                    "Version distinta" { "different version" }
+                    "Sin revisar" { "unknown" }
+                    "No reconocidos" { "not recognized" }
+                    default { $filter.ToLowerInvariant() }
+                }
+                $visible = $row.Status -eq $wanted
             }
         }
         if (-not $visible) {
@@ -313,14 +321,21 @@ function Apply-Filter {
         }
 
         $item = New-Object System.Windows.Forms.ListViewItem($row.Jar)
-        [void]$item.SubItems.Add($row.Status)
-        [void]$item.SubItems.Add($row.Source)
+        [void]$item.SubItems.Add((Get-StatusLabel $row.Status))
+        [void]$item.SubItems.Add((Get-SourceLabel $row.Source))
         [void]$item.SubItems.Add($row.Project)
         [void]$item.SubItems.Add($row.Version)
-        [void]$item.SubItems.Add($row.Action)
+        [void]$item.SubItems.Add((Get-ActionLabel $row.Action))
         [void]$item.SubItems.Add($row.Metafile)
         $item.Checked = [bool]$row.Checked
         $item.Tag = $row
+        switch ($row.Status) {
+            "tracked" { $item.ForeColor = [System.Drawing.Color]::DimGray }
+            "new" { $item.ForeColor = [System.Drawing.Color]::DarkGreen }
+            "different version" { $item.ForeColor = [System.Drawing.Color]::DarkOrange }
+            "not recognized" { $item.ForeColor = [System.Drawing.Color]::Firebrick }
+            default { $item.ForeColor = [System.Drawing.Color]::Black }
+        }
         [void]$List.Items.Add($item)
     }
 
@@ -401,13 +416,50 @@ function Get-CheckedRows {
     return @($script:Rows | Where-Object { $_.Checked })
 }
 
+function Get-StatusLabel {
+    param([string]$Status)
+    switch ($Status) {
+        "tracked" { "Ya incluido" }
+        "unknown" { "Sin revisar" }
+        "new" { "Nuevo" }
+        "different version" { "Version distinta" }
+        "not recognized" { "No reconocido" }
+        default { $Status }
+    }
+}
+
+function Get-SourceLabel {
+    param([string]$Source)
+    switch ($Source) {
+        "filename" { "Nombre de archivo" }
+        "Modrinth id" { "Modrinth" }
+        "Modrinth hash" { "Hash Modrinth" }
+        "local jar" { "Jar local" }
+        "written" { "Escrito" }
+        default { $Source }
+    }
+}
+
+function Get-ActionLabel {
+    param([string]$Action)
+    switch ($Action) {
+        "already indexed" { "No tocar" }
+        "recognize or select" { "Revisar" }
+        "will create metafile" { "Crear .pw.toml" }
+        "will update existing metafile" { "Actualizar .pw.toml" }
+        "not found on Modrinth" { "Buscar manualmente" }
+        "metafile written" { "Preparado" }
+        default { $Action }
+    }
+}
+
 $form = New-Object System.Windows.Forms.Form
-$form.Text = "KasuPack Manager"
+$form.Text = "KasuPack Manager - Gestor del modpack"
 $form.Size = New-Object System.Drawing.Size(1220, 760)
 $form.StartPosition = "CenterScreen"
 
 $rootLabel = New-Object System.Windows.Forms.Label
-$rootLabel.Text = "Pack root"
+$rootLabel.Text = "Carpeta"
 $rootLabel.Location = New-Object System.Drawing.Point(12, 16)
 $rootLabel.Size = New-Object System.Drawing.Size(70, 22)
 $form.Controls.Add($rootLabel)
@@ -419,61 +471,61 @@ $rootBox.Text = $scriptRoot
 $form.Controls.Add($rootBox)
 
 $browseButton = New-Object System.Windows.Forms.Button
-$browseButton.Text = "Browse"
+$browseButton.Text = "Buscar"
 $browseButton.Location = New-Object System.Drawing.Point(994, 10)
 $browseButton.Size = New-Object System.Drawing.Size(80, 28)
 $form.Controls.Add($browseButton)
 
 $scanButton = New-Object System.Windows.Forms.Button
-$scanButton.Text = "Scan"
+$scanButton.Text = "Escanear"
 $scanButton.Location = New-Object System.Drawing.Point(12, 48)
 $scanButton.Size = New-Object System.Drawing.Size(80, 30)
 $form.Controls.Add($scanButton)
 
 $recognizeButton = New-Object System.Windows.Forms.Button
-$recognizeButton.Text = "Recognize visible"
+$recognizeButton.Text = "Reconocer visibles"
 $recognizeButton.Location = New-Object System.Drawing.Point(102, 48)
 $recognizeButton.Size = New-Object System.Drawing.Size(130, 30)
 $form.Controls.Add($recognizeButton)
 
 $addButton = New-Object System.Windows.Forms.Button
-$addButton.Text = "Add/update selected"
+$addButton.Text = "Preparar seleccionados"
 $addButton.Location = New-Object System.Drawing.Point(242, 48)
 $addButton.Size = New-Object System.Drawing.Size(145, 30)
 $form.Controls.Add($addButton)
 
 $selectNeedsButton = New-Object System.Windows.Forms.Button
-$selectNeedsButton.Text = "Select action"
+$selectNeedsButton.Text = "Marcar pendientes"
 $selectNeedsButton.Location = New-Object System.Drawing.Point(397, 48)
 $selectNeedsButton.Size = New-Object System.Drawing.Size(105, 30)
 $form.Controls.Add($selectNeedsButton)
 
 $selectVisibleButton = New-Object System.Windows.Forms.Button
-$selectVisibleButton.Text = "Select visible"
+$selectVisibleButton.Text = "Marcar visibles"
 $selectVisibleButton.Location = New-Object System.Drawing.Point(512, 48)
 $selectVisibleButton.Size = New-Object System.Drawing.Size(105, 30)
 $form.Controls.Add($selectVisibleButton)
 
 $clearButton = New-Object System.Windows.Forms.Button
-$clearButton.Text = "Clear"
+$clearButton.Text = "Limpiar"
 $clearButton.Location = New-Object System.Drawing.Point(627, 48)
 $clearButton.Size = New-Object System.Drawing.Size(75, 30)
 $form.Controls.Add($clearButton)
 
 $publishButton = New-Object System.Windows.Forms.Button
-$publishButton.Text = "Publish"
+$publishButton.Text = "Publicar"
 $publishButton.Location = New-Object System.Drawing.Point(712, 48)
 $publishButton.Size = New-Object System.Drawing.Size(90, 30)
 $form.Controls.Add($publishButton)
 
 $verifyButton = New-Object System.Windows.Forms.Button
-$verifyButton.Text = "Verify"
+$verifyButton.Text = "Verificar"
 $verifyButton.Location = New-Object System.Drawing.Point(812, 48)
 $verifyButton.Size = New-Object System.Drawing.Size(80, 30)
 $form.Controls.Add($verifyButton)
 
 $searchLabel = New-Object System.Windows.Forms.Label
-$searchLabel.Text = "Search"
+$searchLabel.Text = "Buscar"
 $searchLabel.Location = New-Object System.Drawing.Point(12, 91)
 $searchLabel.Size = New-Object System.Drawing.Size(55, 22)
 $form.Controls.Add($searchLabel)
@@ -484,7 +536,7 @@ $searchBox.Size = New-Object System.Drawing.Size(360, 24)
 $form.Controls.Add($searchBox)
 
 $filterLabel = New-Object System.Windows.Forms.Label
-$filterLabel.Text = "Filter"
+$filterLabel.Text = "Filtro"
 $filterLabel.Location = New-Object System.Drawing.Point(444, 91)
 $filterLabel.Size = New-Object System.Drawing.Size(45, 22)
 $form.Controls.Add($filterLabel)
@@ -493,18 +545,18 @@ $filterBox = New-Object System.Windows.Forms.ComboBox
 $filterBox.Location = New-Object System.Drawing.Point(490, 88)
 $filterBox.Size = New-Object System.Drawing.Size(180, 24)
 $filterBox.DropDownStyle = "DropDownList"
-[void]$filterBox.Items.Add("All")
-[void]$filterBox.Items.Add("Needs action")
-[void]$filterBox.Items.Add("tracked")
-[void]$filterBox.Items.Add("new")
-[void]$filterBox.Items.Add("different version")
-[void]$filterBox.Items.Add("unknown")
-[void]$filterBox.Items.Add("not recognized")
+[void]$filterBox.Items.Add("Todos")
+[void]$filterBox.Items.Add("Necesitan accion")
+[void]$filterBox.Items.Add("Ya incluidos")
+[void]$filterBox.Items.Add("Nuevos")
+[void]$filterBox.Items.Add("Version distinta")
+[void]$filterBox.Items.Add("Sin revisar")
+[void]$filterBox.Items.Add("No reconocidos")
 $filterBox.SelectedIndex = 0
 $form.Controls.Add($filterBox)
 
 $summaryLabel = New-Object System.Windows.Forms.Label
-$summaryLabel.Text = "No scan yet"
+$summaryLabel.Text = "Pulsa Escanear para empezar"
 $summaryLabel.Location = New-Object System.Drawing.Point(690, 91)
 $summaryLabel.Size = New-Object System.Drawing.Size(500, 22)
 $form.Controls.Add($summaryLabel)
@@ -517,12 +569,12 @@ $list.CheckBoxes = $true
 $list.FullRowSelect = $true
 $list.GridLines = $true
 [void]$list.Columns.Add("Jar", 280)
-[void]$list.Columns.Add("Status", 110)
-[void]$list.Columns.Add("Source", 110)
-[void]$list.Columns.Add("Project", 190)
+[void]$list.Columns.Add("Estado", 120)
+[void]$list.Columns.Add("Reconocido por", 125)
+[void]$list.Columns.Add("Mod", 190)
 [void]$list.Columns.Add("Version", 120)
-[void]$list.Columns.Add("Action", 170)
-[void]$list.Columns.Add("Metafile", 190)
+[void]$list.Columns.Add("Accion", 170)
+[void]$list.Columns.Add("Archivo Packwiz", 180)
 $form.Controls.Add($list)
 
 $log = New-Object System.Windows.Forms.TextBox
@@ -547,10 +599,10 @@ $scanButton.Add_Click({
         Apply-Filter -List $list -SearchBox $searchBox -FilterBox $filterBox
         $tracked = @($script:Rows | Where-Object { $_.Status -eq "tracked" }).Count
         $unknown = @($script:Rows | Where-Object { $_.Status -eq "unknown" }).Count
-        $summaryLabel.Text = "Jars: $($result.JarCount) | Metafiles: $($result.MetaCount) | Tracked: $tracked | Unknown: $unknown"
-        $log.AppendText("Scan complete. Read $($result.MetaCount) metafiles and $($result.JarCount) jars." + [Environment]::NewLine)
+        $summaryLabel.Text = "Jars: $($result.JarCount) | Packwiz: $($result.MetaCount) | Ya incluidos: $tracked | Sin revisar: $unknown"
+        $log.AppendText("Escaneo listo. Revisa los filtros de arriba." + [Environment]::NewLine)
     } catch {
-        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Scan failed", "OK", "Error") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Error al escanear", "OK", "Error") | Out-Null
     }
 })
 
@@ -560,14 +612,14 @@ $recognizeButton.Add_Click({
         $maps = New-Maps -Metafiles @(Read-PackMetafiles -Root $root)
         $rows = @(Get-VisibleRows -List $list | Where-Object { $_.Status -ne "tracked" })
         foreach ($row in $rows) {
-            $log.AppendText("Recognizing $($row.Jar)..." + [Environment]::NewLine)
+            $log.AppendText("Reconociendo: $($row.Jar)" + [Environment]::NewLine)
             Recognize-Row -Row $row -Maps $maps
-            $log.AppendText("  $($row.Status): $($row.Project) $($row.Version)" + [Environment]::NewLine)
+            $log.AppendText("  $(Get-StatusLabel $row.Status): $($row.Project) $($row.Version)" + [Environment]::NewLine)
             [System.Windows.Forms.Application]::DoEvents()
         }
         Apply-Filter -List $list -SearchBox $searchBox -FilterBox $filterBox
     } catch {
-        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Recognition failed", "OK", "Error") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Error al reconocer", "OK", "Error") | Out-Null
     }
 })
 
@@ -580,17 +632,17 @@ $addButton.Add_Click({
         $maps = New-Maps -Metafiles @(Read-PackMetafiles -Root $root)
         $rows = @(Get-CheckedRows -List $list)
         if ($rows.Count -eq 0) {
-            [System.Windows.Forms.MessageBox]::Show("Select at least one row first.", "Nothing selected", "OK", "Information") | Out-Null
+            [System.Windows.Forms.MessageBox]::Show("Selecciona al menos una fila.", "Nada seleccionado", "OK", "Information") | Out-Null
             return
         }
 
         foreach ($row in $rows) {
             if (-not $row.FileObject) {
-                $log.AppendText("Recognizing $($row.Jar) before writing..." + [Environment]::NewLine)
+                $log.AppendText("Reconociendo antes de preparar: $($row.Jar)" + [Environment]::NewLine)
                 Recognize-Row -Row $row -Maps $maps
             }
             if ($row.Status -notin @("new", "different version")) {
-                $log.AppendText("Skipping $($row.Jar): $($row.Status)." + [Environment]::NewLine)
+                $log.AppendText("Omitido: $($row.Jar) ($((Get-StatusLabel $row.Status)))." + [Environment]::NewLine)
                 continue
             }
 
@@ -605,15 +657,15 @@ $addButton.Add_Click({
             $row.Action = "metafile written"
             $row.Metafile = "mods/.index/$([System.IO.Path]::GetFileName($target))"
             $row.Checked = $false
-            $log.AppendText("Wrote $($row.Metafile)" + [Environment]::NewLine)
+            $log.AppendText("Preparado: $($row.Metafile)" + [Environment]::NewLine)
         }
 
         Run-ProcessCapture -FileName "powershell.exe" -Arguments "-NoProfile -ExecutionPolicy Bypass -File `"$root\clean-pack-index.ps1`"" -WorkingDirectory $root -Log $log
         Run-ProcessCapture -FileName "powershell.exe" -Arguments "-NoProfile -ExecutionPolicy Bypass -File `"$root\update-pack-hash.ps1`"" -WorkingDirectory $root -Log $log
         Apply-Filter -List $list -SearchBox $searchBox -FilterBox $filterBox
-        $log.AppendText("Pack prepared locally. Publish when ready." + [Environment]::NewLine)
+        $log.AppendText("Pack preparado localmente. Pulsa Publicar cuando lo hayas revisado." + [Environment]::NewLine)
     } catch {
-        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Add/update failed", "OK", "Error") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Error al preparar", "OK", "Error") | Out-Null
     }
 })
 
@@ -642,13 +694,13 @@ $clearButton.Add_Click({
 $publishButton.Add_Click({
     try {
         $root = $rootBox.Text.Trim()
-        $answer = [System.Windows.Forms.MessageBox]::Show("This will commit and push to origin/master. Continue?", "Publish", "YesNo", "Question")
+        $answer = [System.Windows.Forms.MessageBox]::Show("Esto hara commit y push a GitHub. Continua?", "Publicar", "YesNo", "Question")
         if ($answer -ne [System.Windows.Forms.DialogResult]::Yes) {
             return
         }
         Run-ProcessCapture -FileName "powershell.exe" -Arguments "-NoProfile -ExecutionPolicy Bypass -File `"$root\publish-pack.ps1`"" -WorkingDirectory $root -Log $log
     } catch {
-        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Publish failed", "OK", "Error") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Error al publicar", "OK", "Error") | Out-Null
     }
 })
 
@@ -657,7 +709,7 @@ $verifyButton.Add_Click({
         $root = $rootBox.Text.Trim()
         Run-ProcessCapture -FileName "powershell.exe" -Arguments "-NoProfile -ExecutionPolicy Bypass -File `"$root\verify-remote-pack.ps1`"" -WorkingDirectory $root -Log $log
     } catch {
-        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Verify failed", "OK", "Error") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message, "Error al verificar", "OK", "Error") | Out-Null
     }
 })
 

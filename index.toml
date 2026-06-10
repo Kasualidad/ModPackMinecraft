@@ -16,6 +16,11 @@ hash = "8b1ef4304fc6f53072d398320ac8d9e4671aa09f3e1736fda0ebb87f1a559d44"
 metafile = true
 
 [[files]]
+file = "mods/.index/apocalypticbosses.pw.toml"
+hash = "028e36553195f42c8066017127a116b91f23727b64af0b5e17d508b1d980e354"
+metafile = true
+
+[[files]]
 file = "mods/.index/appleskin.pw.toml"
 hash = "afddb0579393880a8915fe0c2477024ddea5cd55da44b67d2ded6cd4b0fa9e56"
 metafile = true
@@ -393,6 +398,11 @@ metafile = true
 [[files]]
 file = "mods/.index/memoryleakfix.pw.toml"
 hash = "95cabb592f9e341b86b8c3fe778df46807fd886000937b46be28384c5d373334"
+metafile = true
+
+[[files]]
+file = "mods/.index/minecraft-comes-alive-reborn.pw.toml"
+hash = "449ccf133fdb8da8a925b4faeab9b5e5118248516dc1228df1006db2415adac5"
 metafile = true
 
 [[files]]
