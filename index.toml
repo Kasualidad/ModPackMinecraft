@@ -16,11 +16,6 @@ hash = "8b1ef4304fc6f53072d398320ac8d9e4671aa09f3e1736fda0ebb87f1a559d44"
 metafile = true
 
 [[files]]
-file = "mods/.index/apocalypticbosses.pw.toml"
-hash = "028e36553195f42c8066017127a116b91f23727b64af0b5e17d508b1d980e354"
-metafile = true
-
-[[files]]
 file = "mods/.index/appleskin.pw.toml"
 hash = "afddb0579393880a8915fe0c2477024ddea5cd55da44b67d2ded6cd4b0fa9e56"
 metafile = true
@@ -33,6 +28,11 @@ metafile = true
 [[files]]
 file = "mods/.index/artifacts.pw.toml"
 hash = "c25a2e4f16d9630be10e88d5522a1e89717968f275022f852545ceb945fa22a5"
+metafile = true
+
+[[files]]
+file = "mods/.index/awesome-dungeon.pw.toml"
+hash = "e4d68097a06025055481a94b7ec4b8e4bbebe5024fc3ca1197bd227ea81684ca"
 metafile = true
 
 [[files]]
@@ -51,11 +51,6 @@ hash = "f52677cc99ccb0cecd36b5e6187ab814c24a173583de41858369fdbae89b5d6d"
 metafile = true
 
 [[files]]
-file = "mods/.index/awesome-dungeon.pw.toml"
-hash = "e4d68097a06025055481a94b7ec4b8e4bbebe5024fc3ca1197bd227ea81684ca"
-metafile = true
-
-[[files]]
 file = "mods/.index/awesome-sheep-swell.pw.toml"
 hash = "00b4d94fec4d1f44c5e280c10896786dd01b0090b4f13d4f3e1b9236ad58146c"
 metafile = true
@@ -66,23 +61,23 @@ hash = "7191fbb112c4a49fe1de38f8e3b33fed56aae0fe71d15b2f43619e2c7bdfed39"
 metafile = true
 
 [[files]]
-file = "mods/.index/better-third-person.pw.toml"
-hash = "0cea17f47d4bcdf94c803ddd0857da1274309a2c4445d7e640a88072ef4a8544"
-metafile = true
-
-[[files]]
 file = "mods/.index/betterf3.pw.toml"
 hash = "b6b6caa107da61214f189aa4140592a37106b3642fa942bfdc3f713f4a6f26a5"
 metafile = true
 
 [[files]]
-file = "mods/.index/carry-on-extend.pw.toml"
-hash = "e3e9474e5e8f7006347d5cb7fdeb5a8491a7f842ee50ed65ff9e8b1c7c45d271"
+file = "mods/.index/better-third-person.pw.toml"
+hash = "0cea17f47d4bcdf94c803ddd0857da1274309a2c4445d7e640a88072ef4a8544"
 metafile = true
 
 [[files]]
 file = "mods/.index/carry-on.pw.toml"
 hash = "2ee01afcc573dd39676a854afe8e3e61e036b832fcf2994efd532b811dc47f4f"
+metafile = true
+
+[[files]]
+file = "mods/.index/carry-on-extend.pw.toml"
+hash = "e3e9474e5e8f7006347d5cb7fdeb5a8491a7f842ee50ed65ff9e8b1c7c45d271"
 metafile = true
 
 [[files]]
@@ -251,13 +246,13 @@ hash = "82c4eccae0a7968bafb8d341ca540d7f6f24bc7290c19f9bce66527ebaa2c123"
 metafile = true
 
 [[files]]
-file = "mods/.index/inventory-totem.pw.toml"
-hash = "e87ab726e669693277d8e6eeb6bb4eab5c79dcc2f1926154fe1666507730f35d"
+file = "mods/.index/inventoryhudplus.pw.toml"
+hash = "b4c199b75b2e245878f2e4a07c718a1a14062d5a9203bd330ca51253455e282a"
 metafile = true
 
 [[files]]
-file = "mods/.index/inventoryhudplus.pw.toml"
-hash = "b4c199b75b2e245878f2e4a07c718a1a14062d5a9203bd330ca51253455e282a"
+file = "mods/.index/inventory-totem.pw.toml"
+hash = "e87ab726e669693277d8e6eeb6bb4eab5c79dcc2f1926154fe1666507730f35d"
 metafile = true
 
 [[files]]
@@ -401,11 +396,6 @@ hash = "95cabb592f9e341b86b8c3fe778df46807fd886000937b46be28384c5d373334"
 metafile = true
 
 [[files]]
-file = "mods/.index/minecraft-comes-alive-reborn.pw.toml"
-hash = "449ccf133fdb8da8a925b4faeab9b5e5118248516dc1228df1006db2415adac5"
-metafile = true
-
-[[files]]
 file = "mods/.index/moonlight.pw.toml"
 hash = "b7258ba0f33e4ba93ee9a326566d76f3066b355029a16d5065ac90d56c3a2cb6"
 metafile = true
@@ -541,13 +531,13 @@ hash = "2c16a56d99f8c3ac07f6e31b82d02dc8a2cd07c8190056e1919055820f08af29"
 metafile = true
 
 [[files]]
-file = "mods/.index/spawn-animations-compats.pw.toml"
-hash = "2a191cec56beb61f14449fe50502de2bab452c52af529ef7c5ab828f5ae32204"
+file = "mods/.index/spawn-animations.pw.toml"
+hash = "a03423960fab0763917a49d96f35a4dc828f4fd6e84eb3f67de0ecc302507c2e"
 metafile = true
 
 [[files]]
-file = "mods/.index/spawn-animations.pw.toml"
-hash = "a03423960fab0763917a49d96f35a4dc828f4fd6e84eb3f67de0ecc302507c2e"
+file = "mods/.index/spawn-animations-compats.pw.toml"
+hash = "2a191cec56beb61f14449fe50502de2bab452c52af529ef7c5ab828f5ae32204"
 metafile = true
 
 [[files]]
@@ -616,8 +606,8 @@ hash = "8ab28f83f488fcc5ff9852ba521ed907a15dccdb70e20e70b7ad1cc95069fb5e"
 metafile = true
 
 [[files]]
-file = "mods/.index/waystone-towers.pw.toml"
-hash = "10f28c2bc9f2650f5a393e723e0b2ddb4b9f335c8f71070df68de690f7977187"
+file = "mods/.index/waystones.pw.toml"
+hash = "f3afe5aab9b271e61717e544ecdcc16bca4a6302bfdbf7035cf6d6c0b4843789"
 metafile = true
 
 [[files]]
@@ -626,18 +616,13 @@ hash = "eb56e5a1ab340f3b7e4d35cf26cbe81c4fcefc6599db7d440b8bcc5a55bd8ae4"
 metafile = true
 
 [[files]]
-file = "mods/.index/waystones.pw.toml"
-hash = "f3afe5aab9b271e61717e544ecdcc16bca4a6302bfdbf7035cf6d6c0b4843789"
+file = "mods/.index/waystone-towers.pw.toml"
+hash = "10f28c2bc9f2650f5a393e723e0b2ddb4b9f335c8f71070df68de690f7977187"
 metafile = true
 
 [[files]]
 file = "mods/.index/x+-autofish.pw.toml"
 hash = "fb3e5731c4291316f584df1bb03f620400dc8279ca66f636ca4e97b378ed584c"
-metafile = true
-
-[[files]]
-file = "mods/.index/yung-structures-addon-for-loot-integrations.pw.toml"
-hash = "7c1f6b3f97130a29f69a413ef7f7aa8d5b68a62f5793880390f0447323d899f0"
 metafile = true
 
 [[files]]
@@ -701,6 +686,6 @@ hash = "4e9cf92cda5bc1a6787a28551c579b0b3e139c05b035edf856394fa3241a10b2"
 metafile = true
 
 [[files]]
-file = "mods/.index/appleskin.pw.toml"
-hash = "793693a85f3c87d4e899ee0c58deabc53690bf5a70f17343f28fd5063ce8a1e1"
+file = "mods/.index/yung-structures-addon-for-loot-integrations.pw.toml"
+hash = "7c1f6b3f97130a29f69a413ef7f7aa8d5b68a62f5793880390f0447323d899f0"
 metafile = true
