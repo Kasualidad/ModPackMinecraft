@@ -68,6 +68,11 @@ if ($jarMatches.Count -gt 0) {
     $jarMatches | ForEach-Object { Write-Warning "  mods/$($_.Name)" }
 }
 
+if ((Test-Path -LiteralPath "$PSScriptRoot\clean-pack-index.ps1") -and (Test-Path -LiteralPath "$PSScriptRoot\update-pack-hash.ps1")) {
+    & "$PSScriptRoot\clean-pack-index.ps1"
+    & "$PSScriptRoot\update-pack-hash.ps1"
+}
+
 Write-Host ""
 Write-Host "Done. Next safe step:"
 Write-Host "  .\publish-pack.ps1"
