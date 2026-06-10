@@ -7,13 +7,17 @@ $ErrorActionPreference = "Stop"
 function Get-RemoteBytes {
     param([Parameter(Mandatory = $true)][string]$Url)
 
-    $client = [System.Net.Http.HttpClient]::new()
+    $tempFile = [System.IO.Path]::GetTempFileName()
     try {
-        $client.DefaultRequestHeaders.CacheControl = [System.Net.Http.Headers.CacheControlHeaderValue]::new()
-        $client.DefaultRequestHeaders.CacheControl.NoCache = $true
-        return $client.GetByteArrayAsync($Url).GetAwaiter().GetResult()
+        Invoke-WebRequest -Uri $Url -OutFile $tempFile -UseBasicParsing -Headers @{
+            "Cache-Control" = "no-cache"
+            "Pragma" = "no-cache"
+        } | Out-Null
+        return [System.IO.File]::ReadAllBytes($tempFile)
     } finally {
-        $client.Dispose()
+        if (Test-Path -LiteralPath $tempFile) {
+            Remove-Item -LiteralPath $tempFile -Force
+        }
     }
 }
 
