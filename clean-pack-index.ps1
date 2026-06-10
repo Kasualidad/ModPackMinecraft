@@ -34,6 +34,14 @@ foreach ($match in [regex]::Matches($content, $blockPattern)) {
     }
 
     $filePath = $fileMatch.Groups[1].Value
+    if ($filePath -match '^mods/([^/\\]+\.pw\.toml)$') {
+        $indexedPath = "mods/.index/$($Matches[1])"
+        if (Test-Path -LiteralPath $indexedPath) {
+            $block = [regex]::Replace($block, $filePattern, "file = `"$indexedPath`"", 1)
+            $filePath = $indexedPath
+        }
+    }
+
     if ($filePath -match '^mods/\.index/[^/\\]+\.pw\.toml$') {
         $validBlocks.Add($block)
     }
