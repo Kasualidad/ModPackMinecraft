@@ -1,4 +1,4 @@
-﻿name = "KasuKasualPack"
+name = "KasuKasualPack"
 author = "Kasualidad"
 version = "1.0"
 pack-format = "packwiz:1.1.0"
@@ -6,7 +6,7 @@ pack-format = "packwiz:1.1.0"
 [index]
 file = "index.toml"
 hash-format = "sha256"
-hash = "631d9ab0d5e9450e761575bf4de373761e15bc078373ae03cfda79b4cc0704f1"
+hash = "adb65e2c833a656562e7f10efbad291a2ae5682d49947c19c168d013174f604c"
 
 [versions]
 forge = "47.4.10"

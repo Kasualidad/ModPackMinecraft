@@ -1,4 +1,4 @@
-﻿hash-format = "sha256"
+hash-format = "sha256"
 [[files]]
 file = "mods/.index/3dskinlayers.pw.toml"
 hash = "0acaef31eda164ddebc8a3d7d326f871d5fc483ffa26677137229015d32bf59b"
