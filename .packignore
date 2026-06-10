@@ -1,4 +1,7 @@
 *.jar
+*.mrpack
+*.txt
+index_backup.toml
 
 config/
 data/
@@ -15,6 +18,13 @@ server-resource-packs/
 CustomSkinLoader/
 shaderpacks/
 texturepacks/
+coremods/
+moonlight-global-datapacks/
+patchouli_books/
+trees/
+
+mods/.connector/
+
 options.txt
 servers.dat
 servers.dat_old
