@@ -14,9 +14,7 @@ function Assert-RepoRoot {
 Assert-RepoRoot
 
 $modsDir = Join-Path $PWD "mods"
-$indexDir = Join-Path $modsDir ".index"
 New-Item -ItemType Directory -Force -Path $modsDir | Out-Null
-New-Item -ItemType Directory -Force -Path $indexDir | Out-Null
 
 $before = @{}
 if (Test-Path -LiteralPath $modsDir) {
@@ -39,19 +37,13 @@ if ($createdOrLoose.Count -eq 0) {
     Write-Warning "No loose .pw.toml file was found in mods/. The mod may already exist or packwiz may have changed its output."
 } else {
     foreach ($file in $createdOrLoose) {
-        $text = [IO.File]::ReadAllText($file.FullName)
-        $text = $text -replace '(?m)^(\s*filename\s*=\s*[''"])(?!\.\./)([^''"]+)([''"]\s*)$', '$1../$2$3'
-        [IO.File]::WriteAllText($file.FullName, $text, [Text.UTF8Encoding]::new($false))
-        $target = Join-Path $indexDir $file.Name
-        Move-Item -LiteralPath $file.FullName -Destination $target -Force
-        Write-Host "Created metafile: mods/.index/$($file.Name)"
+        Write-Host "Created metafile: mods/$($file.Name)"
     }
 }
 
-$looseMetafiles = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.pw.toml" -File -ErrorAction SilentlyContinue)
-if ($looseMetafiles.Count -gt 0) {
-    Write-Warning "Loose .pw.toml files found in mods/. Move them to mods/.index before publishing:"
-    $looseMetafiles | ForEach-Object { Write-Warning "  mods/$($_.Name)" }
+$staleLoose = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.pw.toml" -File -ErrorAction SilentlyContinue)
+if ($staleLoose.Count -gt 0) {
+    Write-Host "Packwiz metafiles in mods/: $($staleLoose.Count)"
 }
 
 $jarMatches = @(Get-ChildItem -LiteralPath $modsDir -Filter "*.jar" -File -ErrorAction SilentlyContinue | Where-Object {

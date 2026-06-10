@@ -1,0 +1,18 @@
+filename = 'panascraftrpgmod-3.5-forge-1.20.1.jar'
+name = 'Apocalyptic Bosses'
+side = ''
+x-prismlauncher-dependencies = []
+x-prismlauncher-loaders = [ 'forge' ]
+x-prismlauncher-mc-versions = [ '1.20.1' ]
+x-prismlauncher-release-type = 'release'
+x-prismlauncher-version-number = 'BossesRPG 3.5'
+
+[download]
+hash = '1fe2334482dd692fed57bebd3c588b6ab0ce2fb5'
+hash-format = 'sha1'
+mode = 'metadata:curseforge'
+url = ''
+
+[update.curseforge]
+file-id = 8139931
+project-id = 1141135

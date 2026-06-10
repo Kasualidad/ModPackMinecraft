@@ -31,11 +31,11 @@ if ($LASTEXITCODE -ne 0) {
     throw "git add failed."
 }
 
-$metafiles = @(Get-ChildItem -LiteralPath "mods/.index" -Filter "*.pw.toml" -File -ErrorAction SilentlyContinue)
+$metafiles = @(Get-ChildItem -LiteralPath "mods" -Filter "*.pw.toml" -File -ErrorAction SilentlyContinue)
 if ($metafiles.Count -gt 0) {
     & git add -- ($metafiles | ForEach-Object { $_.FullName })
     if ($LASTEXITCODE -ne 0) {
-        throw "git add for mods/.index metafiles failed."
+        throw "git add for mods metafiles failed."
     }
 }
 

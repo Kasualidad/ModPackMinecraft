@@ -1,0 +1,18 @@
+filename = 'DynamicTrees-1.20.1-1.4.10.jar'
+name = 'Dynamic Trees'
+side = 'both'
+x-prismlauncher-dependencies = []
+x-prismlauncher-loaders = [ 'forge' ]
+x-prismlauncher-mc-versions = [ '1.20.1' ]
+x-prismlauncher-release-type = 'release'
+x-prismlauncher-version-number = '1.20.1-1.4.10'
+
+[download]
+hash = '994ec326dbb6c765f51178246cec49f2d8849b9741d85d90c45065f03dc78da8efdc8dadb779eb7a8f0e09609966bcaf86cc399fd898dc35ee435c704c1869fd'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/vdjF5PL5/versions/JAF7MM1b/DynamicTrees-1.20.1-1.4.10.jar'
+
+[update.modrinth]
+mod-id = 'vdjF5PL5'
+version = 'JAF7MM1b'
