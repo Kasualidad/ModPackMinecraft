@@ -22,7 +22,8 @@ $paths = @(
     "clean-pack-index.ps1",
     "update-pack-hash.ps1",
     "publish-pack.ps1",
-    "verify-remote-pack.ps1"
+    "verify-remote-pack.ps1",
+    "KasuPackManager.ps1"
 )
 
 & git add -- $paths
