@@ -1,4 +1,5 @@
 hash-format = "sha256"
+
 [[files]]
 file = "mods/.index/3dskinlayers.pw.toml"
 hash = "0acaef31eda164ddebc8a3d7d326f871d5fc483ffa26677137229015d32bf59b"
@@ -699,3 +700,7 @@ file = "mods/.index/yungs-extras.pw.toml"
 hash = "4e9cf92cda5bc1a6787a28551c579b0b3e139c05b035edf856394fa3241a10b2"
 metafile = true
 
+[[files]]
+file = "mods/.index/appleskin.pw.toml"
+hash = "793693a85f3c87d4e899ee0c58deabc53690bf5a70f17343f28fd5063ce8a1e1"
+metafile = true
