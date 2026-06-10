@@ -19,40 +19,26 @@ if (-not (Test-Path -LiteralPath "index.toml")) {
     throw "index.toml not found. Run this script from the pack repository root."
 }
 
-$content = [System.IO.File]::ReadAllText((Resolve-Path -LiteralPath "index.toml"))
-$content = ($content -replace "`r`n", "`n") -replace "`r", "`n"
+$indexDir = Join-Path $PWD "mods/.index"
+if (-not (Test-Path -LiteralPath $indexDir)) {
+    throw "mods/.index not found. This pack expects Packwiz metafiles there."
+}
 
-$validBlocks = New-Object System.Collections.Generic.List[string]
-$blockPattern = "(?ms)^\s*\[\[files\]\]\s*.*?(?=^\s*\[\[files\]\]|\z)"
-$filePattern = '(?m)^\s*file\s*=\s*"([^"]+)"\s*$'
+$metafiles = @(Get-ChildItem -LiteralPath $indexDir -Filter "*.pw.toml" -File | Sort-Object Name)
 
-foreach ($match in [regex]::Matches($content, $blockPattern)) {
-    $block = $match.Value.Trim()
-    $fileMatch = [regex]::Match($block, $filePattern)
-    if (-not $fileMatch.Success) {
-        continue
-    }
-
-    $filePath = $fileMatch.Groups[1].Value
-    if ($filePath -match '^mods/([^/\\]+\.pw\.toml)$') {
-        $indexedPath = "mods/.index/$($Matches[1])"
-        if (Test-Path -LiteralPath $indexedPath) {
-            $block = [regex]::Replace($block, $filePattern, "file = `"$indexedPath`"", 1)
-            $filePath = $indexedPath
-        }
-    }
-
-    if ($filePath -match '^mods/\.index/[^/\\]+\.pw\.toml$') {
-        $validBlocks.Add($block)
-    }
+$blocks = New-Object System.Collections.Generic.List[string]
+foreach ($file in $metafiles) {
+    $relativePath = "mods/.index/$($file.Name)"
+    $hash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+    $blocks.Add("[[files]]`nfile = `"$relativePath`"`nhash = `"$hash`"`nmetafile = true")
 }
 
 $output = "hash-format = `"sha256`"`n"
-if ($validBlocks.Count -gt 0) {
+if ($blocks.Count -gt 0) {
     $output += "`n"
-    $output += ($validBlocks -join "`n`n")
+    $output += ($blocks -join "`n`n")
     $output += "`n"
 }
 
 Write-Utf8NoBomLf -Path "index.toml" -Content $output
-Write-Host "Cleaned index.toml. Kept $($validBlocks.Count) mods/.index/*.pw.toml entries."
+Write-Host "Rebuilt index.toml from $($blocks.Count) mods/.index/*.pw.toml entries."
