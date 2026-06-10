@@ -446,6 +446,16 @@ hash = "396953047af7491aec6efd0955de31e4d67ec08eab368801ceee4af5fbcdfd00"
 metafile = true
 
 [[files]]
+file = "mods/.index/parcool.pw.toml"
+hash = "a99dd9b16f3cb822fcf6e365c070c7c8016ef7e0b859ab7ea82961ec8c2f0419"
+metafile = true
+
+[[files]]
+file = "mods/.index/parcool-compatibility-addon.pw.toml"
+hash = "c31b3e0b1058ae83e2937657d36f12203ae2a52a44a8013c8c406a401eb9c939"
+metafile = true
+
+[[files]]
 file = "mods/.index/patchouli.pw.toml"
 hash = "1c726ff3286692fc9174691caa59d908e8963c4496ae74c934cef9d5da952318"
 metafile = true
